@@ -20,7 +20,3 @@ add_link_options(-lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl)
 
 add_executable(${PROJECT_NAME} src/${PROJECT_NAME}.cpp
                ../../glad/src/glad.c)
-            #    ../../glad/include/glad/glad.h)
-
-# target_include_directories(${PROJECT_NAME} PUBLIC ../glad/include/)
-
