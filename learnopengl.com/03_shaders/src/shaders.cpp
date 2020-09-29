@@ -11,19 +11,30 @@ void vertexShaderCompileStatus(const unsigned int shader);
 void fragmentShaderCompileStatus(const unsigned int shader);
 void shaderLinkStatus(const unsigned int shader);
 
+// Triangle.
+const float vertices[] = {
+    //  Positions       Colours
+    -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+     0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+};
+
 const char* vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aColour;\n"
+    "out vec3 ourColour;\n"
     "void main()\n"
     "{\n"
     "    gl_Position = vec4(aPos, 1.0f);\n"
+    "    ourColour   = aColour;\n"
     "}\0";
 
 const char* fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColour;\n"
-    "uniform vec4 ourColour;\n"
+    "in vec3 ourColour;\n"
     "void main()\n"
     "{\n"
-    "    FragColour = ourColour;\n"
+    "    FragColour = vec4(ourColour, 1.0);\n"
     "}\0";
 
 int main(int argc, char* argv[])
@@ -91,13 +102,6 @@ int main(int argc, char* argv[])
 
     shaderLinkStatus(shaderProgram);
 
-    // Triangle.
-    const float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
-    };
-
     unsigned int vao;
     unsigned int vbo;
 
@@ -109,8 +113,11 @@ int main(int argc, char* argv[])
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
