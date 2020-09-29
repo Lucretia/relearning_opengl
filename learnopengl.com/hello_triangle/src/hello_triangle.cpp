@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
+void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void shaderCompileStatus(const unsigned int shader, const char* const which);
 void vertexShaderCompileStatus(const unsigned int shader);
 void fragmentShaderCompileStatus(const unsigned int shader);
@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
 
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, keyboard_callback);
 
     // This cannot be any earlier otherwise it fails.
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -119,15 +120,12 @@ int main(int argc, char* argv[])
 
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window);
-
         // Rendering.
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
         glBindVertexArray(vao);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         glBindVertexArray(0);
 
@@ -149,11 +147,32 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow* window)
+void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    static bool fillModeOn = true;
+
+    switch (key)
     {
-        glfwSetWindowShouldClose(window, true);
+        case GLFW_KEY_F:
+            if (action == GLFW_PRESS)
+                {
+                    if (fillModeOn)
+                    {
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                    }
+                    else
+                    {
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                    }
+
+                    fillModeOn = !fillModeOn;
+                }
+            break;
+
+        case GLFW_KEY_ESCAPE:
+            glfwSetWindowShouldClose(window, true);
+
+            break;
     }
 }
 
