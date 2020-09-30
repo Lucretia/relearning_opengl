@@ -14,9 +14,11 @@ project(shaders VERSION 0.1.0)
 # add_subdirectory(../../glad/src)
 # add_subdirectory(src)
 
-include_directories(../../glad/include/)
+include_directories(../../glad/include)
+include_directories(../../utils/include)
 
 add_link_options(-lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl)
 
 add_executable(${PROJECT_NAME} src/${PROJECT_NAME}.cpp
-               ../../glad/src/glad.c)
+               ../../glad/src/glad.c
+               ../../utils/src/shader.cpp)
