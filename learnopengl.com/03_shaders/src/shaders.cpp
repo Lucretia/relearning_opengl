@@ -4,12 +4,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <utils/shader.hpp>
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-void shaderCompileStatus(const unsigned int shader, const char* const which);
-void vertexShaderCompileStatus(const unsigned int shader);
-void fragmentShaderCompileStatus(const unsigned int shader);
-void shaderLinkStatus(const unsigned int shader);
 
 // Triangle.
 const float vertices[] = {
@@ -18,24 +16,6 @@ const float vertices[] = {
      0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
      0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f
 };
-
-const char* vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aColour;\n"
-    "out vec3 ourColour;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_Position = vec4(aPos, 1.0f);\n"
-    "    ourColour   = aColour;\n"
-    "}\0";
-
-const char* fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColour;\n"
-    "in vec3 ourColour;\n"
-    "void main()\n"
-    "{\n"
-    "    FragColour = vec4(ourColour, 1.0);\n"
-    "}\0";
 
 int main(int argc, char* argv[])
 {
@@ -77,30 +57,7 @@ int main(int argc, char* argv[])
     std::cout << "Max. number of vertex attributes: " << numAttributes << std::endl;
 
     // Shaders.
-    unsigned int vertexShader;
-    unsigned int fragmentShader;
-
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-    glCompileShader(vertexShader);
-
-    vertexShaderCompileStatus(vertexShader);
-
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-    glCompileShader(fragmentShader);
-
-    fragmentShaderCompileStatus(fragmentShader);
-
-    unsigned int shaderProgram;
-
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    shaderLinkStatus(shaderProgram);
+    Shader ourShader("../learnopengl.com/03_shaders/src/shader.vs", "../learnopengl.com/03_shaders/src/shader.fs");
 
     unsigned int vao;
     unsigned int vbo;
@@ -128,11 +85,11 @@ int main(int argc, char* argv[])
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
+        ourShader.use();
 
         const float timeValue  = glfwGetTime();
         const float greenValue = sin(timeValue) / 2.0 + 0.5f;
-        const int   vertexColourLocation = glGetUniformLocation(shaderProgram, "ourColour");
+        const int   vertexColourLocation = glGetUniformLocation(ourShader.program(), "ourColour");
 
         glUniform4f(vertexColourLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
@@ -144,9 +101,6 @@ int main(int argc, char* argv[])
         glfwSwapBuffers(window);
         glfwPollEvents();
     } // Render loop.
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
 
     glfwTerminate();
 
@@ -187,44 +141,3 @@ void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, in
     }
 }
 
-void shaderCompileStatus(const unsigned int shader, const char* const which)
-{
-    int success;
-    const int logSize = 512;
-    char log[logSize];
-
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-
-    if (!success)
-    {
-        glGetShaderInfoLog(shader, logSize, nullptr, log);
-
-        std::cout << "ERROR::SHADER::" << which << "::COMPILATION_FAILED\n" << log << std::endl;
-    }
-}
-
-void vertexShaderCompileStatus(const unsigned int shader)
-{
-    shaderCompileStatus(shader, "VERTEX");
-}
-
-void fragmentShaderCompileStatus(const unsigned int shader)
-{
-    shaderCompileStatus(shader, "FRAGMENT");
-}
-
-void shaderLinkStatus(const unsigned int shader)
-{
-    int success;
-    const int logSize = 512;
-    char log[logSize];
-
-    glGetShaderiv(shader, GL_LINK_STATUS, &success);
-
-    if (!success)
-    {
-        glGetShaderInfoLog(shader, logSize, nullptr ,log);
-
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << log << std::endl;
-    }
-}
