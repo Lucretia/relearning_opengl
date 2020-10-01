@@ -11,6 +11,9 @@ Shader::Shader(const char* const vertexPath, const char* const fragmentPath)
     std::ifstream vertexFile;
     std::ifstream fragmentFile;
 
+    // std::cout << "VS: " << vertexPath << std::endl;
+    // std::cout << "FS: " << fragmentPath << std::endl;
+
     vertexFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     fragmentFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
