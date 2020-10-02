@@ -34,7 +34,7 @@ class Shader
         {
             return ID;
         }
-    private:
+    // private:
         unsigned int ID;
 };
 
