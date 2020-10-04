@@ -13,6 +13,7 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void mouse_callback(GLFWwindow* window, double xPos, double yPos);
 
 void GLAPIENTRY
 MessageCallback( GLenum source,
@@ -99,15 +100,21 @@ float lastFrame = 0.0f;
 
 void processInput(GLFWwindow* window);
 
+const int windowWidth  = 1280;
+const int windowHeight = 1024;
+
+bool  mouseVisible = true;
+float lastX        = static_cast<float>(windowWidth / 2);
+float lastY        = static_cast<float>(windowHeight / 2);
+float yaw          = 0.0f;
+float pitch        = 0.0f;
+
 int main(int argc, char* argv[])
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    const int windowWidth  = 1280;
-    const int windowHeight = 1024;
 
     GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "LearnOpenGL - Camera", NULL, NULL);
 
@@ -120,9 +127,11 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, keyboard_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
 
     // This cannot be any earlier otherwise it fails.
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -320,11 +329,72 @@ void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, in
                 }
             break;
 
+        case GLFW_KEY_M:
+            if (action == GLFW_PRESS)
+            {
+                if (mouseVisible)
+                {
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                }
+                else
+                {
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                }
+
+                mouseVisible = !mouseVisible;
+            }
+            break;
+
         case GLFW_KEY_ESCAPE:
             glfwSetWindowShouldClose(window, true);
 
             break;
     }
+}
+
+void mouse_callback(GLFWwindow* window, double xPos, double yPos)
+{
+    static bool firstMouse = true;
+
+    if (firstMouse)
+    {
+        lastX = xPos;
+        lastY = yPos;
+
+        firstMouse = !firstMouse;
+    }
+    float xOffset = xPos - lastX;
+    float yOffset = lastY - yPos; // reversed as y-coods  range from bottom to top.
+
+    lastX = xPos;
+    lastY = yPos;
+
+    const float sensitivity = 0.1f;
+
+    xOffset *= sensitivity;
+    yOffset *= sensitivity;
+
+    yaw   += xOffset;
+    pitch += yOffset;
+
+    // Make sure the camera doesn't flip.
+    if (pitch > 89.0f)
+    {
+        pitch = 89.0f;
+    }
+
+    if (pitch < -89.0f)
+    {
+        pitch = -89.0f;
+    }
+
+    glm::vec3 direction;
+
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+    cameraFront = glm::normalize(direction);
 }
 
 void processInput(GLFWwindow* window)
