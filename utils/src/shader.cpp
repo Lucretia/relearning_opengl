@@ -106,7 +106,7 @@ void shaderLinkStatus(const unsigned int shader)
     const int logSize = 512;
     char log[logSize];
 
-    glGetShaderiv(shader, GL_LINK_STATUS, &success);
+    glGetProgramiv(shader, GL_LINK_STATUS, &success);
 
     if (!success)
     {
