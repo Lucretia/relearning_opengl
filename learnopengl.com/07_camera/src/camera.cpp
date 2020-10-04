@@ -91,9 +91,13 @@ glm::vec3 cubePositions[] = {
 glm::vec3   cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3   cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3   cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
-const float cameraSpeed = 0.05f;
+
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
 #define PATH    "../learnopengl.com/07_camera"
+
+void processInput(GLFWwindow* window);
 
 int main(int argc, char* argv[])
 {
@@ -231,6 +235,13 @@ int main(int argc, char* argv[])
 
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = glfwGetTime();
+
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        processInput(window);
+
         // Rendering.
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -289,7 +300,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    static bool fillModeOn = true;
+    static bool fillModeOn  = true;
 
     switch (key)
     {
@@ -313,26 +324,27 @@ void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, in
             glfwSetWindowShouldClose(window, true);
 
             break;
-
-        case GLFW_KEY_W:
-            cameraPos += cameraSpeed * cameraFront;
-
-            break;
-
-        case GLFW_KEY_S:
-            cameraPos -= cameraSpeed * cameraFront;
-
-            break;
-
-        case GLFW_KEY_A:
-            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-
-            break;
-
-        case GLFW_KEY_D:
-            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-
-            break;
     }
 }
 
+void processInput(GLFWwindow* window)
+{
+    const float cameraSpeed = 2.5f * deltaTime;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        cameraPos += cameraSpeed * cameraFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        cameraPos -= cameraSpeed * cameraFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+}
