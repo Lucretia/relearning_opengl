@@ -80,6 +80,8 @@ void shaderCompileStatus(const unsigned int shader, const char* const which)
     const int logSize = 512;
     char log[logSize];
 
+    // std::cerr << "[shaderCompileStatus] " << which << std::endl;
+
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
     if (!success)
@@ -92,11 +94,15 @@ void shaderCompileStatus(const unsigned int shader, const char* const which)
 
 void vertexShaderCompileStatus(const unsigned int shader)
 {
+    // std::cerr << "[vertexShaderCompileStatus]" << std::endl;
+
     shaderCompileStatus(shader, "VERTEX");
 }
 
 void fragmentShaderCompileStatus(const unsigned int shader)
 {
+    // std::cerr << "[fragmentShaderCompileStatus]" << std::endl;
+
     shaderCompileStatus(shader, "FRAGMENT");
 }
 
@@ -105,6 +111,8 @@ void shaderLinkStatus(const unsigned int shader)
     int success;
     const int logSize = 512;
     char log[logSize];
+
+    // std::cerr << "[shaderLinkStatus]" << std::endl;
 
     glGetProgramiv(shader, GL_LINK_STATUS, &success);
 
