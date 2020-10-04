@@ -14,6 +14,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void mouse_callback(GLFWwindow* window, double xPos, double yPos);
+void mouse_scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
 
 void GLAPIENTRY
 MessageCallback( GLenum source,
@@ -108,6 +109,7 @@ float lastX        = static_cast<float>(windowWidth / 2);
 float lastY        = static_cast<float>(windowHeight / 2);
 float yaw          = 0.0f;
 float pitch        = 0.0f;
+float fov          = 45.0f;
 
 int main(int argc, char* argv[])
 {
@@ -132,6 +134,7 @@ int main(int argc, char* argv[])
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, keyboard_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, mouse_scroll_callback);
 
     // This cannot be any earlier otherwise it fails.
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -264,7 +267,7 @@ int main(int argc, char* argv[])
         ourShader.use();
 
         glm::mat4 view       = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(windowWidth / windowHeight), 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(fov), static_cast<float>(windowWidth / windowHeight), 0.1f, 100.0f);
 
         glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
@@ -395,6 +398,21 @@ void mouse_callback(GLFWwindow* window, double xPos, double yPos)
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
     cameraFront = glm::normalize(direction);
+}
+
+void mouse_scroll_callback(GLFWwindow* window, double xOffset, double yOffset)
+{
+    fov -= static_cast<float>(yOffset);
+
+    if (fov < 1.0f)
+    {
+        fov = 1.0f;
+    }
+
+    if (fov > 45.0f)
+    {
+        fov = 45.0f;
+    }
 }
 
 void processInput(GLFWwindow* window)
