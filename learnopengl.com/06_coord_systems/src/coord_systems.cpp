@@ -253,7 +253,12 @@ int main(int argc, char* argv[])
 
             model = glm::translate(model, cubePositions[i]);
 
-            const float angle = 20.0f * i;
+            float angle = 20.0f * i;
+
+            if (i % 3 == 0)
+            {
+                angle = glfwGetTime() * 25.0f;
+            }
 
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
