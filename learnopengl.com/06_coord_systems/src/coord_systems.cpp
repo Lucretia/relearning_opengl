@@ -14,6 +14,22 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+    std::cerr << "GL CALLBACK: " << ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" )
+              << std::hex << " type = " << type
+              << std::hex << ", severity = " << severity
+              << ", message = " << message
+              << std::endl;
+}
+
 // Triangle.
 const float vertices[] = {
     // Vertices             Colours             Texture coords
@@ -28,7 +44,7 @@ unsigned int indices[] = {
     1, 2, 3
 };
 
-#define PATH    "../learnopengl.com/05_transformations"
+#define PATH    "../learnopengl.com/06_coord_systems"
 
 int main(int argc, char* argv[])
 {
@@ -62,6 +78,10 @@ int main(int argc, char* argv[])
 
         return -1;
     }
+
+    // During init, enable debug output
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(MessageCallback, 0);
 
     int numAttributes;
 
