@@ -88,7 +88,7 @@ glm::vec3 cubePositions[] = {
     glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
-#define PATH    "../learnopengl.com/06_coord_systems"
+#define PATH    "../learnopengl.com/07_camera"
 
 int main(int argc, char* argv[])
 {
@@ -238,13 +238,14 @@ int main(int argc, char* argv[])
 
         ourShader.use();
 
-        glm::mat4 view  = glm::mat4(1.0f);
-        glm::mat4 projection;
+        const float radius = 10.0f;
+        const float camX   = sin(glfwGetTime()) * radius;
+        const float camZ   = cos(glfwGetTime()) * radius;
 
-        view       = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
-                                 glm::vec3(0.0f, 0.0f, 0.0f),
-                                 glm::vec3(0.0f, 1.0f, 0.0f));
-        projection = glm::perspective(glm::radians(45.0f), static_cast<float>(windowWidth / windowHeight), 0.1f, 100.0f);
+        glm::mat4 view       = glm::lookAt(glm::vec3(camX, 0.0f, camZ),
+                                           glm::vec3(0.0f, 0.0f, 0.0f),
+                                           glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(windowWidth / windowHeight), 0.1f, 100.0f);
 
         glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
