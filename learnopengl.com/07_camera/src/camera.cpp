@@ -88,6 +88,11 @@ glm::vec3 cubePositions[] = {
     glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
+glm::vec3   cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3   cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3   cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+const float cameraSpeed = 0.05f;
+
 #define PATH    "../learnopengl.com/07_camera"
 
 int main(int argc, char* argv[])
@@ -218,9 +223,9 @@ int main(int argc, char* argv[])
     ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1);
 
-    unsigned int modelLocation      = glGetUniformLocation(ourShader.ID, "model");
-    unsigned int viewLocation       = glGetUniformLocation(ourShader.ID, "view");
-    unsigned int projectionLocation = glGetUniformLocation(ourShader.ID, "projection");
+    GLint modelLocation      = glGetUniformLocation(ourShader.ID, "model");
+    GLint viewLocation       = glGetUniformLocation(ourShader.ID, "view");
+    GLint projectionLocation = glGetUniformLocation(ourShader.ID, "projection");
 
     glEnable(GL_DEPTH_TEST);
 
@@ -238,13 +243,7 @@ int main(int argc, char* argv[])
 
         ourShader.use();
 
-        const float radius = 10.0f;
-        const float camX   = sin(glfwGetTime()) * radius;
-        const float camZ   = cos(glfwGetTime()) * radius;
-
-        glm::mat4 view       = glm::lookAt(glm::vec3(camX, 0.0f, camZ),
-                                           glm::vec3(0.0f, 0.0f, 0.0f),
-                                           glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 view       = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(windowWidth / windowHeight), 0.1f, 100.0f);
 
         glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
@@ -312,6 +311,26 @@ void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, in
 
         case GLFW_KEY_ESCAPE:
             glfwSetWindowShouldClose(window, true);
+
+            break;
+
+        case GLFW_KEY_W:
+            cameraPos += cameraSpeed * cameraFront;
+
+            break;
+
+        case GLFW_KEY_S:
+            cameraPos -= cameraSpeed * cameraFront;
+
+            break;
+
+        case GLFW_KEY_A:
+            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+
+            break;
+
+        case GLFW_KEY_D:
+            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 
             break;
     }
