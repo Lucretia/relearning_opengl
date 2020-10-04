@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
     ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1);
 
-    unsigned int transformLocation = glGetUniformLocation(ourShader.ID, "transform");
+    GLint transformLocation = glGetUniformLocation(ourShader.ID, "transform");
 
     while (!glfwWindowShouldClose(window))
     {

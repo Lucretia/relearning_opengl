@@ -218,9 +218,9 @@ int main(int argc, char* argv[])
     ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1);
 
-    unsigned int modelLocation      = glGetUniformLocation(ourShader.ID, "model");
-    unsigned int viewLocation       = glGetUniformLocation(ourShader.ID, "view");
-    unsigned int projectionLocation = glGetUniformLocation(ourShader.ID, "projection");
+    GLint modelLocation      = glGetUniformLocation(ourShader.ID, "model");
+    GLint viewLocation       = glGetUniformLocation(ourShader.ID, "view");
+    GLint projectionLocation = glGetUniformLocation(ourShader.ID, "projection");
 
     glEnable(GL_DEPTH_TEST);
 
