@@ -118,7 +118,7 @@ void shaderLinkStatus(const unsigned int shader)
 
     if (!success)
     {
-        glGetShaderInfoLog(shader, logSize, nullptr ,log);
+        glGetProgramInfoLog(shader, logSize, nullptr ,log);
 
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << log << std::endl;
     }
