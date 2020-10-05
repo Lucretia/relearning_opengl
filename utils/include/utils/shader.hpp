@@ -5,6 +5,10 @@
 
 #include <glad/glad.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 class Shader
 {
     public:
@@ -28,6 +32,16 @@ class Shader
         inline void setFloat(const std::string& name, const float value) const
         {
             glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+        }
+
+        inline void setMatrix(const std::string& name, const glm::mat4& matrix)
+        {
+            glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+        }
+
+        inline void setVector(const std::string& name, const glm::vec3& vector)
+        {
+            glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(vector));
         }
 
         inline unsigned int program() const
