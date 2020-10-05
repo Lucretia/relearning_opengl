@@ -7,10 +7,6 @@
 #include <utils/shader.hpp>
 #include <stb_image/stb_image.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void mouse_callback(GLFWwindow* window, double xPos, double yPos);
@@ -155,7 +151,8 @@ int main(int argc, char* argv[])
     std::cout << "Max. number of vertex attributes: " << numAttributes << std::endl;
 
     // Shaders.
-    Shader ourShader(PATH "/src/shader.vs", PATH "/src/shader.fs");
+    Shader lightingShader(PATH "/src/shader.vs", PATH "/src/shader.fs");
+    Shader lightingCubeShader(PATH "/src/shader.vs", PATH "/src/shader_cube.fs");
 
     unsigned int vao;
     unsigned int vbo;
@@ -171,69 +168,74 @@ int main(int argc, char* argv[])
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+    // glEnableVertexAttribArray(1);
 
-    unsigned int texture1;
-    unsigned int texture2;
+    // unsigned int texture1;
+    // unsigned int texture2;
 
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    // glGenTextures(1, &texture1);
+    // glBindTexture(GL_TEXTURE_2D, texture1);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    int width;
-    int height;
-    int numChannels;
-    unsigned char* data = stbi_load(PATH "/../textures/container.jpg", &width, &height, &numChannels, 0);
+    // int width;
+    // int height;
+    // int numChannels;
+    // unsigned char* data = stbi_load(PATH "/../textures/container.jpg", &width, &height, &numChannels, 0);
 
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture: " << std::endl;
-    }
+    // if (data)
+    // {
+    //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    //     glGenerateMipmap(GL_TEXTURE_2D);
+    // }
+    // else
+    // {
+    //     std::cout << "Failed to load texture: " << std::endl;
+    // }
 
-    stbi_image_free(reinterpret_cast<void*>(data));
+    // stbi_image_free(reinterpret_cast<void*>(data));
 
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
+    // glGenTextures(1, &texture2);
+    // glBindTexture(GL_TEXTURE_2D, texture2);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    stbi_set_flip_vertically_on_load(true);
+    // stbi_set_flip_vertically_on_load(true);
 
-    data = stbi_load(PATH "/../textures/awesomeface.png", &width, &height, &numChannels, 0);
+    // data = stbi_load(PATH "/../textures/awesomeface.png", &width, &height, &numChannels, 0);
 
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture: " << std::endl;
-    }
+    // if (data)
+    // {
+    //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    //     glGenerateMipmap(GL_TEXTURE_2D);
+    // }
+    // else
+    // {
+    //     std::cout << "Failed to load texture: " << std::endl;
+    // }
 
-    stbi_image_free(reinterpret_cast<void*>(data));
+    // stbi_image_free(reinterpret_cast<void*>(data));
 
-    ourShader.use();
+    lightingShader.use();
 
-    ourShader.setInt("texture1", 0);
-    ourShader.setInt("texture2", 1);
+    // lightingShader.setInt("texture1", 0);
+    // lightingShader.setInt("texture2", 1);
 
-    GLint modelLocation      = glGetUniformLocation(ourShader.ID, "model");
-    GLint viewLocation       = glGetUniformLocation(ourShader.ID, "view");
-    GLint projectionLocation = glGetUniformLocation(ourShader.ID, "projection");
+    unsigned int lightVAO;
+
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
+    glEnableVertexAttribArray(0);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -250,19 +252,19 @@ int main(int argc, char* argv[])
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, texture1);
+        // glActiveTexture(GL_TEXTURE1);
+        // glBindTexture(GL_TEXTURE_2D, texture2);
         glBindVertexArray(vao);
 
-        ourShader.use();
+        lightingShader.use();
 
         glm::mat4 view       = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glm::mat4 projection = glm::perspective(glm::radians(fov), static_cast<float>(windowWidth / windowHeight), 0.1f, 100.0f);
 
-        glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+        lightingShader.setMatrix("view", view);
+        lightingShader.setMatrix("projection", projection);
 
         glm::mat4 model = glm::mat4(1.0f);
 
@@ -270,7 +272,7 @@ int main(int argc, char* argv[])
 
         model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
-        glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+        lightingShader.setMatrix("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // Check/call events and then swap the render buffers.
