@@ -367,6 +367,11 @@ void mouse_callback(GLFWwindow* window, double xPos, double yPos)
 {
     static bool firstMouse = true;
 
+    if (!mouseVisible)
+    {
+        return;
+    }
+
     if (firstMouse)
     {
         lastX = xPos;
