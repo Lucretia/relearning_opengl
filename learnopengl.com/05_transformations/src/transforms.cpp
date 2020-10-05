@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
     int width;
     int height;
     int numChannels;
-    unsigned char* data = stbi_load(PATH "/textures/container.jpg", &width, &height, &numChannels, 0);
+    unsigned char* data = stbi_load(PATH "/../textures/container.jpg", &width, &height, &numChannels, 0);
 
     if (data)
     {
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        std::cout << "Failed to load texture: " << std::endl;
+        std::cout << "Failed to load texture: container.jpg" << std::endl;
     }
 
     stbi_image_free(reinterpret_cast<void*>(data));
@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
 
     stbi_set_flip_vertically_on_load(true);
 
-    data = stbi_load(PATH "/textures/awesomeface.png", &width, &height, &numChannels, 0);
+    data = stbi_load(PATH "/../textures/awesomeface.png", &width, &height, &numChannels, 0);
 
     if (data)
     {
@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        std::cout << "Failed to load texture: " << std::endl;
+        std::cout << "Failed to load texture: awesomeface.png" << std::endl;
     }
 
     stbi_image_free(reinterpret_cast<void*>(data));
