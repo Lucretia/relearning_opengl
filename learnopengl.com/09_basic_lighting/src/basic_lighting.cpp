@@ -282,6 +282,7 @@ int main(int argc, char* argv[])
         model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
         lightingShader.setMatrix("model", model);
+        lightingShader.setMatrix("normal", glm::transpose(glm::inverse(model)));
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // Draw the light cube.
