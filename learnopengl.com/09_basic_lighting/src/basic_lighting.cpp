@@ -283,6 +283,9 @@ int main(int argc, char* argv[])
 
         lightingShader.setMatrix("model", model);
         lightingShader.setMatrix("normal", glm::transpose(glm::inverse(model)));
+
+        lightingShader.setVector("viewPos", cameraPos);
+
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // Draw the light cube.
