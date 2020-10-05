@@ -9,8 +9,8 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-void mouse_callback(GLFWwindow* window, double xPos, double yPos);
-void mouse_scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
+// void mouse_callback(GLFWwindow* window, double xPos, double yPos);
+// void mouse_scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
 
 void GLAPIENTRY
 MessageCallback( GLenum source,
@@ -101,10 +101,10 @@ const int windowWidth  = 1280;
 const int windowHeight = 1024;
 
 bool  mouseVisible = true;
-float lastX        = static_cast<float>(windowWidth / 2);
-float lastY        = static_cast<float>(windowHeight / 2);
-float yaw          = 0.0f;
-float pitch        = 0.0f;
+// float lastX        = static_cast<float>(windowWidth / 2);
+// float lastY        = static_cast<float>(windowHeight / 2);
+// float yaw          = 0.0f;
+// float pitch        = 0.0f;
 float fov          = 45.0f;
 
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
@@ -131,8 +131,8 @@ int main(int argc, char* argv[])
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, keyboard_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, mouse_scroll_callback);
+    // glfwSetCursorPosCallback(window, mouse_callback);
+    // glfwSetScrollCallback(window, mouse_scroll_callback);
 
     // This cannot be any earlier otherwise it fails.
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -358,65 +358,65 @@ void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, in
     }
 }
 
-void mouse_callback(GLFWwindow* window, double xPos, double yPos)
-{
-    static bool firstMouse = true;
+// void mouse_callback(GLFWwindow* window, double xPos, double yPos)
+// {
+//     static bool firstMouse = true;
 
-    if (firstMouse)
-    {
-        lastX = xPos;
-        lastY = yPos;
+//     if (firstMouse)
+//     {
+//         lastX = xPos;
+//         lastY = yPos;
 
-        firstMouse = !firstMouse;
-    }
-    float xOffset = xPos - lastX;
-    float yOffset = lastY - yPos; // reversed as y-coods  range from bottom to top.
+//         firstMouse = !firstMouse;
+//     }
+//     float xOffset = xPos - lastX;
+//     float yOffset = lastY - yPos; // reversed as y-coods  range from bottom to top.
 
-    lastX = xPos;
-    lastY = yPos;
+//     lastX = xPos;
+//     lastY = yPos;
 
-    const float sensitivity = 0.1f;
+//     const float sensitivity = 0.1f;
 
-    xOffset *= sensitivity;
-    yOffset *= sensitivity;
+//     xOffset *= sensitivity;
+//     yOffset *= sensitivity;
 
-    yaw   += xOffset;
-    pitch += yOffset;
+//     yaw   += xOffset;
+//     pitch += yOffset;
 
-    // Make sure the camera doesn't flip.
-    if (pitch > 89.0f)
-    {
-        pitch = 89.0f;
-    }
+//     // Make sure the camera doesn't flip.
+//     if (pitch > 89.0f)
+//     {
+//         pitch = 89.0f;
+//     }
 
-    if (pitch < -89.0f)
-    {
-        pitch = -89.0f;
-    }
+//     if (pitch < -89.0f)
+//     {
+//         pitch = -89.0f;
+//     }
 
-    glm::vec3 direction;
+//     glm::vec3 direction;
 
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+//     direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+//     direction.y = sin(glm::radians(pitch));
+//     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
-    cameraFront = glm::normalize(direction);
-}
+//     cameraFront = glm::normalize(direction);
+// }
 
-void mouse_scroll_callback(GLFWwindow* window, double xOffset, double yOffset)
-{
-    fov -= static_cast<float>(yOffset);
+// void mouse_scroll_callback(GLFWwindow* window, double xOffset, double yOffset)
+// {
+//     fov -= static_cast<float>(yOffset);
 
-    if (fov < 1.0f)
-    {
-        fov = 1.0f;
-    }
+//     if (fov < 1.0f)
+//     {
+//         fov = 1.0f;
+//     }
 
-    if (fov > 45.0f)
-    {
-        fov = 45.0f;
-    }
-}
+//     if (fov > 45.0f)
+//     {
+//         fov = 45.0f;
+//     }
+// }
 
 void processInput(GLFWwindow* window)
 {
